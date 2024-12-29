@@ -9,3 +9,5 @@
 qpf文件即为entity的文件，使用Quartus打开。
 
 pdf文件为VHDL电子书，读者可以在其中参考VHDL语法。
+
+Quartus_pra1文件夹是f1实验，Quartus_pra3文件夹是f2实验
