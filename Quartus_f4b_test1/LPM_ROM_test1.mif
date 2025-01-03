@@ -1,0 +1,93 @@
+-- Copyright (C) 2020  Intel Corporation. All rights reserved.
+-- Your use of Intel Corporation's design tools, logic functions 
+-- and other software and tools, and any partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Intel Program License 
+-- Subscription Agreement, the Intel Quartus Prime License Agreement,
+-- the Intel FPGA IP License Agreement, or other applicable license
+-- agreement, including, without limitation, that your use is for
+-- the sole purpose of programming logic devices manufactured by
+-- Intel and sold by Intel or its authorized distributors.  Please
+-- refer to the applicable agreement for further details, at
+-- https://fpgasoftware.intel.com/eula.
+
+-- Quartus Prime generated Memory Initialization File (.mif)
+
+WIDTH=32;
+DEPTH=128;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	00  :   00810000;
+	01  :   00A00000;
+	02  :   02000000;
+	03  :   01000014;
+	04  :   01000019;
+	05  :   0100001E;
+	06  :   01000023;
+	07  :   01000041;
+	08  :   01000028;
+	09  :   0100002D;
+	0A  :   01000032;
+	0B  :   01000037;
+	0C  :   0100003C;
+	0D  :   01000046;
+	0E  :   0100004B;
+	[0F..13]  :   00000000;
+	14  :   00840000;
+	15  :   00920200;
+	16  :   04080000;
+	[17..18]  :   00000000;
+	19  :   00840000;
+	1A  :   00810A00;
+	1B  :   00C03000;
+	1C  :   04080000;
+	1D  :   00000000;
+	1E  :   00840000;
+	1F  :   00810200;
+	20  :   00C03000;
+	21  :   04080000;
+	22  :   00000000;
+	23  :   00840000;
+	24  :   00810200;
+	25  :   00C04000;
+	26  :   04080000;
+	27  :   00000000;
+	28  :   00840000;
+	29  :   00810200;
+	2A  :   00C06000;
+	2B  :   04080000;
+	2C  :   00000000;
+	2D  :   00840000;
+	2E  :   00810200;
+	2F  :   00C07000;
+	30  :   04080000;
+	31  :   00000000;
+	32  :   00840000;
+	33  :   00808200;
+	34  :   04080000;
+	[35..36]  :   00000000;
+	37  :   00840000;
+	38  :   08092000;
+	39  :   04080000;
+	[3A..3B]  :   00000000;
+	3C  :   00840000;
+	3D  :   0080A200;
+	3E  :   04080000;
+	[3F..40]  :   00000000;
+	41  :   00840000;
+	42  :   00805000;
+	43  :   04080000;
+	[44..45]  :   00000000;
+	46  :   00840000;
+	47  :   00810200;
+	48  :   00C0B000;
+	49  :   04080000;
+	4A  :   00000000;
+	4B  :   0100004B;
+	[4C..7F]  :   00000000;
+END;

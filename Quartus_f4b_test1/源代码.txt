@@ -1,0 +1,231 @@
+------------------------************源代码***************------------------------
+1. ALU 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity ALU is
+port( clk,reset,ACCclear:in std_logic;
+     aluCONTR :in std_logic_vector(3 downto 0);
+     BR       :in std_logic_vector(15 downto 0);
+     PCjmp    :out std_logic;
+     ACC      :buffer std_logic_vector(15 downto 0));
+end ALU;
+architecture behave of ALU is
+begin
+  process(clk)
+  begin
+    if(clk'event and clk='0')then
+     if reset='0' then ACC<=x"0000";
+      else
+       if ACCclear='1' then        ACC<=x"0000";       end if;
+       if aluCONTR="0011" then   ACC<=BR+ACC;      end if;      --ADD
+       if aluCONTR="0100" then   ACC<=ACC-BR;       end if;      --SUB
+       if aluCONTR="0110" then   ACC<=ACC and BR;   end if;      --AND
+       if aluCONTR="0111" then   ACC<=ACC or BR;    end if;       --OR
+       if aluCONTR="1000" then   ACC<=not ACC;      end if;       --NOT
+       if aluCONTR="1001" then                                   --SRR
+          ACC(14 downto 0)<=ACC(15 downto 1);    ACC(15)<='0';
+       end if;
+       if aluCONTR="1010" then                                   --SRL
+          ACC(15 downto 1)<=ACC(14 downto 0);     ACC(0)<='0';
+       end if;
+       if aluCONTR="1011" then   ACC <= ACC(7 downto 0)*BR(7 downto 0);       end if;     --MPY
+      end if;
+     end if;
+     if ACC>0 then         PCjmp<='1';
+         else PCjmp<='0';
+     end if;
+  end process;
+end behave;
+
+2. BR             （Buffer Register）
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity BR is
+port(
+      MBR_BRc:in   std_logic;
+       MBR_BR:in   std_logic_vector(15 downto 0);
+        BRout:out  std_logic_vector(15 downto 0)
+	 );
+end BR;
+architecture behave of BR is
+begin
+  process(MBR_BRc)
+  begin
+       if MBR_BRc='1' then     BRout <= MBR_BR;     
+  end if;
+  end process;
+  end behave;
+
+3. CAR           (Controller Address Register)
+ library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity CAR is
+port( clk,reset :in std_logic;
+     CARc  :in std_logic_vector(3 downto 0);
+     CAR,OP   :in std_logic_vector(7 downto 0);
+     CARout:buffer std_logic_vector(7 downto 0));
+end CAR;
+architecture behave of CAR is
+begin
+  process(clk)
+  begin
+    if(clk'event and clk='1')then
+     if reset='1' then
+      if CARc="1000" then         CARout<="00000000";       end if;
+      if CARc="0100" then         CARout<=OP+CARout;        end if;
+      if CARc="0010" then         CARout<=CAR;              end if;
+      if CARc="0001" then         CARout<=CARout+1;         end if;
+     else CARout<="00000000";
+     end if;
+    end if;
+ end process;
+end behave;
+
+4. controlr
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity CONTROLR is
+port(
+     control :in std_logic_vector(31 downto 0);
+     R,W, RW, PCc1,PCinc,PCc3:out std_logic;
+     ACCclear,MBR_MARc,PC_MARc:out std_logic;
+     ACC_MBRc,MBR_OPc,MBR_BRc:out std_logic;
+     CONTRout:out std_logic_vector(3 downto 0);
+     CARc  :out std_logic_vector(3 downto 0);
+     CAR   :out std_logic_vector(7 downto 0));
+end CONTROLR;
+architecture behave of CONTROLR is
+begin
+  process(control)
+  begin
+       CAR<=control(7 downto 0);
+       PCc1<=control(8);
+       PCinc<=control(9);
+       PCc3<=control(10);
+       ACCclear<=control(11);
+       CONTRout<=control(15 downto 12);
+       R<=control(16);
+       W<=control(17);
+       MBR_MARc<=control(18);
+       PC_MARc<=control(19);
+       ACC_MBRc<=control(20);
+       MBR_OPc<=control(21);
+       MBR_BRc<=control(22);
+       CARc<=control(26 downto 23);
+       RW<=control(17);
+end process;
+end behave;
+
+5. IR
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity IR is
+port(  opcode  :in std_logic_vector(7 downto 0);
+       IRout   :out std_logic_vector(7 downto 0));
+end IR;
+architecture behave of IR is
+begin
+    IRout<=opcode;
+end behave;
+
+6. MAR    (Memory Address Register)
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity MAR is
+port( 
+     clk,PC_MARc,MBR_MARc:in std_logic;
+     PC,MBR_MAR:in std_logic_vector(7 downto 0);
+     MARout:out std_logic_vector(7 downto 0)
+	  );
+end MAR;
+architecture behave of MAR is
+begin
+  process(clk)
+  begin
+    if(clk'event and clk='1')then
+       if PC_MARc='1' then      MARout<=PC;           end if;
+       if MBR_MARc='1' then     MARout<=MBR_MAR;      end if;
+    end if;
+  end process;
+end behave;
+
+7. MBR    (Memory Buffer Register)
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity MBR is
+port( 
+     clk, reset, MBR_OPc, ACC_MBRc,R,W:in std_logic;
+     ACC_MBR :in std_logic_vector(15 downto 0);
+     RAM_MBR :in std_logic_vector(15 downto 0);
+     MBR_RAM :out std_logic_vector(15 downto 0);
+     MBR_BR  :out std_logic_vector(15 downto 0);
+     MBR_OP  :out std_logic_vector(7 downto 0);
+     MBR_MAR :out std_logic_vector(7 downto 0);
+     MBR_PC  :out std_logic_vector(7 downto 0)
+	  );
+end MBR;
+architecture behave of MBR is
+begin
+  process(clk)
+  variable temp:std_logic_vector(15 downto 0);
+  begin
+    if(clk'event and clk='0')then
+     if reset='1' then
+       if ACC_MBRc='1' then    temp:=ACC_MBR;   end if;
+       if R='1'        then    MBR_BR<=RAM_MBR;     end if;
+       if W='1'        then    MBR_RAM<=temp;      end if;
+       MBR_MAR<=RAM_MBR(7 downto 0);
+       MBR_PC<=RAM_MBR(7 downto 0);
+       if MBR_OPc='1' then   MBR_OP<=RAM_MBR(15 downto 8);    end if;
+      else MBR_BR<=x"0000";
+           MBR_MAR<="00000000";
+           MBR_OP<="00000000";
+           MBR_PC<="00000000";
+      end if;
+    end if;
+  end process;
+end behave;
+
+8. PC    (Program Counter)
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+entity PC is
+port( 
+     clk,PCjmp,PCc1,PCinc,PCc3,reset:in std_logic;
+     CONTRalu  :in std_logic_vector(3 downto 0);
+     MBR_PC   :in std_logic_vector(7 downto 0);
+     PCout      :buffer std_logic_vector(7 downto 0)
+	  );
+end PC;
+architecture behave of PC is
+begin
+  process(clk)
+  begin
+    if(clk'event and clk='0')then
+      if reset='1' then
+         if CONTRalu="0101" then
+           if PCjmp='1' then            PCout<=MBR_PC;
+            elsif PCjmp='0' then PCout<=PCout+1;
+           end if;
+         end if;
+         if PCc1='1' then          PCout<="00000000";       end if;
+         if PCinc='1' then          PCout<=PCout+1;         end if;
+         if PCc3='1' then          PCout<=MBR_PC;         end if;
+      else PCout<="00000000";
+      end if;
+    end if;
+  end process;
+end behave;
+
+9. LPM_RAM_DQ
+10. ROM
+11. top_level
+使用bdf文件完成
