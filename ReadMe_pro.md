@@ -12,4 +12,4 @@ pdf文件为VHDL电子书，读者可以在其中参考VHDL语法。
 
 Quartus_pra1文件夹是f1实验，Quartus_pra3文件夹是f2实验, Quartus_pra4_test3文件夹是f3实验
 
-Quartus_f4a_test2文件夹是f4a实验
+Quartus_f4a_test2文件夹是f4a实验，Quartus_f4b_test1文件夹是f4b实验
